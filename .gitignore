@@ -14,6 +14,7 @@
 *.log
 
 # Visual Studio 2026 Temporary and Build Files
+ConsoleApplication1/
 .vs/
 Debug/
 Release/
