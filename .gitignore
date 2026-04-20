@@ -12,3 +12,14 @@
 
 # Any temporary crash logs
 *.log
+
+# Visual Studio 2026 Temporary and Build Files
+.vs/
+Debug/
+Release/
+x64/
+x86/
+*.user
+*.suo
+*.db
+*.log
