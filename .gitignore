@@ -20,6 +20,8 @@ Debug/
 Release/
 x64/
 x86/
+*.vcxproj
+*.vcxproj.filters
 *.user
 *.suo
 *.db
