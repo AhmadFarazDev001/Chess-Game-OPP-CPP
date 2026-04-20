@@ -127,7 +127,12 @@ void Board::printBoard()
 
 void Board::move()
 {
+#ifdef _WIN32
+	system("cls");
+#endif
+#ifdef _APPLE_
 	system("clear");
+#endif
 	printBoard();
 	int startX, startY, endX, endY;
 	cout << "Enter Piece Position (X:Y): ";
