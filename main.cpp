@@ -1,5 +1,4 @@
-
-#include "tempboard.h"
+#include "library.h"
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -18,11 +17,7 @@ int main()
     SetConsoleMode(hOut, dwMode);
 #endif
 
-    Board b;
-    for (int i = 0; i < 10; i++)
-    {
-        b.move();
-    }
+
 
 	return 0;
 }
