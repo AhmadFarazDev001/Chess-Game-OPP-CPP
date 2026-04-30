@@ -1,5 +1,5 @@
 //there is function abs is used as in mathemetics abs used in th programming it gives positive only chess only matters distance
-#include"piece.h"
+#include"Piece.h"
 //piece class
 Piece::Piece(const string _color , const string _symbol):color(_color) , symbol(_symbol){};
 string Piece::getcolor(){
@@ -20,23 +20,23 @@ bool Pawn::isValidMove(int startX, int startY, int endX, int endY){
     //Y upward
     if(color == "Black"){
         // step forward
-        if(dx == 0 && dy ==-1){
+        if(dx == 0 && dy ==1){
             return true;
         }
-        if(dx == 0 && dy == -2 && hasmoved == false){
+        if(dx == 0 && dy == 2 && hasmoved == false){
             return true;
         }
-        if((dx== 1 || dy ==-1)&& dy == -1){
+        if((dx== 1 || dx == -1)&& dy == 1){
             return true;
         }
     }
     // Y downward
     if(color == "White"){
         // step forward
-        if(dx == 0 && dy ==1){
+        if(dx == 0 && dy ==-1){
             return true;
         }
-        if(dx == 0 && dy ==2 && hasmoved == false){
+        if(dx == 0 && dy ==-2 && hasmoved == false){
             return true;
         }
         if((dx== 1 || dx ==-1)&& dy == -1){

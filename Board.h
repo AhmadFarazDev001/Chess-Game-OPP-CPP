@@ -25,4 +25,5 @@ public:
     // Game State Scanners
     bool isKingInCheck(string kingColor);
     bool isCheckmate(string kingColor);
+    bool isStalemate(string kingColor);
 };

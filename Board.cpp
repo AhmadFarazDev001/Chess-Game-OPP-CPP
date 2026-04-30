@@ -53,14 +53,14 @@ void Board::setupStartingPosition()
 	grid[6][6] = new Pawn("White");
 	grid[6][7] = new Pawn("White");
 
-	grid[7][0] = new Rook("Whiht");
-	grid[7][1] = new Knight("Whiht");
-	grid[7][2] = new Bishop("Whiht");
-	grid[7][3] = new Queen("Whiht");
-	grid[7][4] = new King("Whiht");
-	grid[7][5] = new Bishop("Whiht");
-	grid[7][6] = new Knight("Whiht");
-	grid[7][7] = new Rook("Whiht");
+	grid[7][0] = new Rook("White");
+	grid[7][1] = new Knight("White");
+	grid[7][2] = new Bishop("White");
+	grid[7][3] = new Queen("White");
+	grid[7][4] = new King("White");
+	grid[7][5] = new Bishop("White");
+	grid[7][6] = new Knight("White");
+	grid[7][7] = new Rook("White");
 }
 
 void Board::printRow(int y)
@@ -74,9 +74,9 @@ void Board::printRow(int y)
 	{
 
 		if ((y + i) % 2 == 0)
-			cout << bgDark << " " << ((grid[y - 1][i] != nullptr) ? (grid[y - 1][i]->getSymbol()) : " ") << " " << reset << "|";
+			cout << bgDark << " " << ((grid[y - 1][i] != nullptr) ? (grid[y - 1][i]->getsymbol()) : " ") << " " << reset << "|";
 		else
-			cout << bgBrown << " " << ((grid[y - 1][i] != nullptr) ? (grid[y - 1][i])->getSymbol() : " ") << " " << reset << "|";
+			cout << bgBrown << " " << ((grid[y - 1][i] != nullptr) ? (grid[y - 1][i])->getsymbol() : " ") << " " << reset << "|";
 	}
 	cout << "\n";
 }
@@ -135,7 +135,7 @@ bool Board::isPathClear(int startX, int startY, int endX, int endY)
 
 	while (currX != endX || currY != endY)
 	{
-		if (grid[currY - 1][currX - 1] != nullptr) //-1 beacuse index starts from 0
+		if (grid[currY][currX] != nullptr) //-1 beacuse index starts from 0
 		{
 			return false;
 		}
@@ -157,7 +157,7 @@ bool Board::isKingInCheck(string kingColor)
 		{
 			if (grid[i][j] != nullptr)
 			{
-				if (grid[i][j]->getColor() == kingColor && grid[i][j]->getSymbol() == ((kingColor == "Black") ? "\u265A" : "\u2654"))
+				if (grid[i][j]->getcolor() == kingColor && grid[i][j]->getsymbol() == ((kingColor == "Black") ? "\u265A" : "\u2654"))
 				{
 					kingX = j; kingY = i;
 				}
@@ -172,19 +172,26 @@ bool Board::isKingInCheck(string kingColor)
 		{
 			if (grid[i][j] != nullptr)
 			{
-				if (grid[i][j]->getColor() != kingColor)
+				if (grid[i][j]->getcolor() != kingColor)
 				{
 					//Stemp 3: Check the threat
 					if (grid[i][j]->isValidMove(j, i, kingX, kingY) == true)
 					{
-						if ((grid[i][j]->getSymbol() == "\u265E") || (grid[i][j]->getSymbol() == "\u2658")) //Check Knight
+						if (grid[i][j]->getsymbol() == "\u2659" || grid[i][j]->getsymbol() == "\u265F")
 						{
-							return true;
+							if (j == kingX)
+							{
+								continue;
+							}
 						}
-						else if(isPathClear(j, i, kingX, kingY) == true)
-						{
-							return true;
-						}
+							if ((grid[i][j]->getsymbol() == "\u265E") || (grid[i][j]->getsymbol() == "\u2658")) //Check Knight
+							{
+								return true;
+							}
+							else if (isPathClear(j, i, kingX, kingY) == true)
+							{
+								return true;
+							}
 					}
 				}
 			}
@@ -204,7 +211,7 @@ bool Board::executeMove(int startX, int startY, int endX, int endY, string curre
 	}
 
 	//Step 2: Check square ownership
-	if (grid[startY - 1][startX - 1]->getColor() != currentPlayerColor)
+	if (grid[startY - 1][startX - 1]->getcolor() != currentPlayerColor)
 	{
 		cout << "Error: Enemy Piece!" << endl;
 		return false;
@@ -217,11 +224,24 @@ bool Board::executeMove(int startX, int startY, int endX, int endY, string curre
 		return false;
 	}
 
+
+	if (grid[startY - 1][startX - 1]->getsymbol() == "\u2659" || grid[startY - 1][startX - 1]->getsymbol() == "\u265F")
+	{
+		if ((startX == endX) && (grid[endY - 1][endX - 1] != nullptr))
+		{
+			return false;
+		}
+		else if ((startX != endX) && (grid[endY - 1][endX - 1] == nullptr))
+		{
+			return false;
+		}
+	}
+
 	//Knight can teleport
 	//Step 4: Check if the path is clear
-	if ((grid[startY - 1][startX - 1]->getSymbol() != "\u265E") && (grid[startY - 1][startX - 1]->getSymbol() != "\u2658"))
+	if ((grid[startY - 1][startX - 1]->getsymbol() != "\u265E") && (grid[startY - 1][startX - 1]->getsymbol() != "\u2658"))
 	{
-		if (isPathClear(startX, startY, endX, endY) == false)
+		if (isPathClear(startX-1, startY-1, endX-1, endY-1) == false)
 		{
 			cout << "Error: Path is not clear!" << endl;
 			return false;
@@ -231,7 +251,7 @@ bool Board::executeMove(int startX, int startY, int endX, int endY, string curre
 	//Step 5: Check the destination is empty or not and what is color of destination piece
 	if (grid[endY - 1][endX - 1] != nullptr)
 	{
-		if (grid[endY - 1][endX - 1]->getColor() == currentPlayerColor)
+		if (grid[endY - 1][endX - 1]->getcolor() == currentPlayerColor)
 		{
 			cout << "Error: Player Piece!" << endl;
 			return false;
@@ -259,3 +279,88 @@ bool Board::executeMove(int startX, int startY, int endX, int endY, string curre
 
 }
 
+bool Board::isCheckmate(string kingColor)
+{
+	if (isKingInCheck(kingColor) == false)
+	{
+		return false;
+	}
+
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			if (grid[i][j] != nullptr)
+			{
+				if (grid[i][j]->getcolor() == kingColor)
+				{
+					//We get friendly piece
+					int startX = j, startY = i;
+					for (int r = 0; r < 8; r++)
+					{
+						for (int s = 0; s < 8; s++)
+						{
+							if (grid[i][j]->isValidMove(startX,startY,s,r)==true)
+							{
+								if (grid[startY][startX]->getsymbol() == "\u2659" || grid[startY][startX]->getsymbol() == "\u265F")
+								{
+									if ((startX == s) && (grid[r][s] != nullptr))
+									{
+										continue;
+									}
+									else if ((startX != s) && (grid[r][s] == nullptr))
+									{
+										continue;
+									}
+								}
+									if (grid[r][s] == nullptr || grid[r][s]->getcolor() != kingColor )
+									{
+										if ((grid[startY][startX]->getsymbol() != "\u265E") && (grid[startY][startX]->getsymbol() != "\u2658"))
+										{
+											if (isPathClear(startX, startY, s, r) == true)
+											{
+
+												//Piece can succesfully move to target Point
+												Piece* temp = grid[r][s];
+												grid[r][s] = grid[startY][startX];
+												grid[startY][startX] = nullptr;
+												bool isDanger = isKingInCheck(kingColor);
+												//Rewind the whole process
+												grid[startY][startX] = grid[r][s];
+												grid[r][s] = temp;
+												if (!isDanger)
+												{
+													//Our king is safe
+													return false;
+												}
+											}
+										}
+										else
+										{
+											//Piece can succesfully move to target Point
+											Piece* temp = grid[r][s];
+											grid[r][s] = grid[startY][startX];
+											grid[startY][startX] = nullptr;
+											bool isDanger = isKingInCheck(kingColor);
+											//Rewind the whole process
+											grid[startY][startX] = grid[r][s];
+											grid[r][s] = temp;
+											if (!isDanger)
+											{
+												//Our king is safe
+												return false;
+											}
+											
+										}
+									}
+								
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	//checkmate occurr
+	return true;
+}
