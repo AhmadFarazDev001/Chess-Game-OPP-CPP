@@ -279,12 +279,8 @@ bool Board::executeMove(int startX, int startY, int endX, int endY, string curre
 
 }
 
-bool Board::isCheckmate(string kingColor)
+bool Board::hasLegalMoves(string kingColor)
 {
-	if (isKingInCheck(kingColor) == false)
-	{
-		return false;
-	}
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -300,7 +296,7 @@ bool Board::isCheckmate(string kingColor)
 					{
 						for (int s = 0; s < 8; s++)
 						{
-							if (grid[i][j]->isValidMove(startX,startY,s,r)==true)
+							if (grid[i][j]->isValidMove(startX, startY, s, r) == true)
 							{
 								if (grid[startY][startX]->getsymbol() == "\u2659" || grid[startY][startX]->getsymbol() == "\u265F")
 								{
@@ -313,30 +309,13 @@ bool Board::isCheckmate(string kingColor)
 										continue;
 									}
 								}
-									if (grid[r][s] == nullptr || grid[r][s]->getcolor() != kingColor )
+								if (grid[r][s] == nullptr || grid[r][s]->getcolor() != kingColor)
+								{
+									if ((grid[startY][startX]->getsymbol() != "\u265E") && (grid[startY][startX]->getsymbol() != "\u2658"))
 									{
-										if ((grid[startY][startX]->getsymbol() != "\u265E") && (grid[startY][startX]->getsymbol() != "\u2658"))
+										if (isPathClear(startX, startY, s, r) == true)
 										{
-											if (isPathClear(startX, startY, s, r) == true)
-											{
 
-												//Piece can succesfully move to target Point
-												Piece* temp = grid[r][s];
-												grid[r][s] = grid[startY][startX];
-												grid[startY][startX] = nullptr;
-												bool isDanger = isKingInCheck(kingColor);
-												//Rewind the whole process
-												grid[startY][startX] = grid[r][s];
-												grid[r][s] = temp;
-												if (!isDanger)
-												{
-													//Our king is safe
-													return false;
-												}
-											}
-										}
-										else
-										{
 											//Piece can succesfully move to target Point
 											Piece* temp = grid[r][s];
 											grid[r][s] = grid[startY][startX];
@@ -348,12 +327,29 @@ bool Board::isCheckmate(string kingColor)
 											if (!isDanger)
 											{
 												//Our king is safe
-												return false;
+												return true;
 											}
-											
 										}
 									}
-								
+									else
+									{
+										//Piece can succesfully move to target Point
+										Piece* temp = grid[r][s];
+										grid[r][s] = grid[startY][startX];
+										grid[startY][startX] = nullptr;
+										bool isDanger = isKingInCheck(kingColor);
+										//Rewind the whole process
+										grid[startY][startX] = grid[r][s];
+										grid[r][s] = temp;
+										if (!isDanger)
+										{
+											//Our king is safe
+											return true;
+										}
+
+									}
+								}
+
 							}
 						}
 					}
@@ -361,6 +357,23 @@ bool Board::isCheckmate(string kingColor)
 			}
 		}
 	}
-	//checkmate occurr
-	return true;
+	return false;
+}
+
+bool Board::isCheckmate(string kingColor)
+{
+	if (isKingInCheck(kingColor) && !hasLegalMoves(kingColor)) 
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Board::isStalemate(string kingColor)
+{
+	if (!isKingInCheck(kingColor) && !hasLegalMoves(kingColor))
+	{
+		return true;
+	}
+	return false;
 }
