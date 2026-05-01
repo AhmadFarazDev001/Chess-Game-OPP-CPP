@@ -1,5 +1,15 @@
+//
+//  library.h
+//  CPP-Chess-game
+//
+//  Created by Ubaid Afzal on 29/04/2026.
+//
+
 #pragma once
+#ifndef library_h
+#define  library_h
 #include <iostream>
+#include<map>
 #include <iomanip>
 #include <cstring>
 #include <string>
@@ -10,4 +20,4 @@ using std::cout;
 using std::cin;
 using std::endl;
 using std::string;
-
+#endif
