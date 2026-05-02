@@ -11,7 +11,7 @@ bool executeGame()
             system("cls");
            #endif
 			
-			#ifdef __APPLE__
+			#ifdef _APPLE_
 			system("clear");
 			#endif
 			cout << "+===============================+\n";
