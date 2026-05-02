@@ -1,3 +1,4 @@
+
 # ♟️ Chess Engine (C++ / OOP)
 
 ![C++](https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B)
@@ -37,19 +38,19 @@ If you are trying to test using the console, you must configure the SFML library
 * Make sure your compiler has the `/utf-8` flag enabled so the console chess symbols render correctly.
 
 **To compile and run via Windows Terminal (using MinGW/g++):**
-` ` `bash
+```bash
 # 1. Compile the source code
 g++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp -o ChessGame.exe -lsfml-graphics -lsfml-window -lsfml-system
 
 # 2. Run the game
 .\ChessGame.exe
-` ` `
+```
 
 ### 3. Building from Source (Mac / Linux)
 Because our engine is built on standard C++ and SFML, it is 100% cross-platform. Here is the method to compile and play using the terminal:
 
 **For macOS:**
-` ` `bash
+```bash
 # 1. Install SFML via Homebrew
 brew install sfml
 
@@ -58,10 +59,10 @@ clang++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp
 
 # 3. Run the game
 ./ChessGame
-` ` `
+```
 
 **For Linux (Ubuntu/Debian):**
-` ` `bash
+```bash
 # 1. Install SFML
 sudo apt-get install libsfml-dev
 
@@ -70,7 +71,7 @@ g++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp -o 
 
 # 3. Run the game
 ./ChessGame
-` ` `
+```
 
 ---
 
