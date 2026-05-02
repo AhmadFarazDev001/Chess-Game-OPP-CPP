@@ -1,5 +1,12 @@
 #include "gameexecution.h"
 
+void pauseWithError(string message) {
+	cout << "\033[1;31m" << message << "\033[0m" << endl; 
+	cout << "Press Enter to continue...";
+	cin.ignore(1000, '\n'); 
+	cin.get();           
+}
+
 bool executeGame()
 {
 	Board board;
@@ -28,9 +35,16 @@ bool executeGame()
 		string startMove,endMove;
 		cout << "Enter Piece Position: ";
 		cin >> startMove;
+		if (startMove.length() != 2 || startMove[0] < 'a' || startMove[0] > 'h' || startMove[1] < '1' || startMove[1] > '8') {
+			pauseWithError("Invalid input format! Use coordinates like 'a2'.");
+			continue;
+		}
 		cout << "Enter Destination Position: ";
 		cin >> endMove;
-
+		if (endMove.length() != 2 || endMove[0] < 'a' || endMove[0] > 'h' || endMove[1] < '1' || endMove[1] > '8') {
+			pauseWithError("Invalid destination format! Use coordinates like 'a4'.");
+			continue;
+		}
 		startX = startMove[0] - 'a' + 1;
 		startY = 9 - (startMove[1] - '0');
 		endX = endMove[0] - 'a' + 1;
@@ -38,7 +52,7 @@ bool executeGame()
 
 		if (board.executeMove(startX, startY, endX, endY,currentTurn) == false)
 		{
-			cout << "Wrong Move! Try Again.\n";
+			pauseWithError("Move failed! Please review the error above.");
 			continue;
 		}
 
@@ -46,19 +60,24 @@ bool executeGame()
 
 		if (board.isCheckmate(opponent))
 		{
-			cout << "Winner: " << currentTurn << endl;
+			#ifdef _WIN32
+			system("cls");
+			#else
+			system("clear");
+			#endif
+			board.printBoard();
+			cout << "\n\033[1;32mCHECKMATE! Winner: " << currentTurn << "\033[0m" << endl;
 			break;
 		}
 
 		if (board.isDraw(opponent))
 		{
-			cout << "Draw!" << endl;
+			cout << "Game ended in a Draw!" << endl;
 			break;
 		}
 		currentTurn = opponent;
 		board.recordPosition(currentTurn);
-
-
+		cin.ignore(1000, '\n');
 	}
 
 	return true;

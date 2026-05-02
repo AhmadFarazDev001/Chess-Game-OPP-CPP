@@ -201,21 +201,21 @@ bool Board::executeMove(int startX, int startY, int endX, int endY, string curre
     //Step 1: Check if square is empty or not
     if (grid[startY - 1][startX - 1] == nullptr)
     {
-        cout << "Error:Square is empty!" << endl;
+        cout << "Error: No piece selected at the starting position!" << endl;
         return false;
     }
 
     //Step 2: Check square ownership
     if (grid[startY - 1][startX - 1]->getcolor() != currentPlayerColor)
     {
-        cout << "Error: Enemy Piece!" << endl;
+        cout << "Error: You cannot move your opponent's piece!" << endl;
         return false;
     }
 
     //Step 3: Checks if a piece move correct
     if (grid[startY - 1][startX - 1]->isValidMove(startX, startY, endX, endY) == false)
     {
-        cout << "Error: Invalid Move!" << endl;
+        cout << "Error: This piece cannot move in that specific pattern." << endl;
         return false;
     }
 
@@ -238,7 +238,7 @@ bool Board::executeMove(int startX, int startY, int endX, int endY, string curre
     {
         if (isPathClear(startX-1, startY-1, endX-1, endY-1) == false)
         {
-            cout << "Error: Path is not clear!" << endl;
+            cout << "Error: The path to the destination is blocked by another piece." << endl;
             return false;
         }
     }
@@ -248,7 +248,7 @@ bool Board::executeMove(int startX, int startY, int endX, int endY, string curre
     {
         if (grid[endY - 1][endX - 1]->getcolor() == currentPlayerColor)
         {
-            cout << "Error: Player Piece!" << endl;
+            cout << "Error: You cannot capture your own piece!" << endl;
             return false;
         }
     }
@@ -261,7 +261,7 @@ bool Board::executeMove(int startX, int startY, int endX, int endY, string curre
     {
         grid[startY - 1][startX - 1] = grid[endY - 1][endX - 1];
         grid[endY - 1][endX - 1] = tempPiece;
-        cout << "Error: King is in CHECK" << endl;
+        cout << "Error: Move rejected! This would leave your King in check." << endl;
         return false;
     }
     else
