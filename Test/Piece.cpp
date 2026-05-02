@@ -1,7 +1,10 @@
 //there is function abs is used as in mathemetics abs used in th programming it gives positive only chess only matters distance
 #include"Piece.h"
 //piece class
-Piece::Piece(const string _color , const string _symbol):color(_color) , symbol(_symbol){};
+Piece::Piece(const string _color , const string _symbol):color(_color) , symbol(_symbol)
+{
+    hasmoved = true;
+};
 string Piece::getcolor(){
     return color;
 }
@@ -11,9 +14,22 @@ string Piece::getsymbol(){
 void Piece::sethasmoved(bool moved){
     hasmoved = moved;
 }
+bool Piece::gethasmoved()
+{
+    return hasmoved;
+}
+Piece::~Piece() {};
 
 //Pawn class
 
+Pawn::Pawn(const string _color) :Piece(_color, "") {
+    if (_color == "White") {
+        symbol = "\u2659";
+    }
+    else if (_color == "Black") {
+        symbol = "\u265F";
+    }
+};
 bool Pawn::isValidMove(int startX, int startY, int endX, int endY){
     int dx = endX - startX;
     int dy = endY - startY;
@@ -45,8 +61,9 @@ bool Pawn::isValidMove(int startX, int startY, int endX, int endY){
     }
     return false;
 }
+Pawn::~Pawn() {};
 
-
+//Kinght Class
 bool Knight::isValidMove(int startX, int startY, int endX, int endY){
     int dx = endX - startX;
     int dy = endY - startY;
@@ -57,7 +74,18 @@ bool Knight::isValidMove(int startX, int startY, int endX, int endY){
     return false;
 }
 
+Knight::Knight(const string _color) :Piece(_color, "") {
+    string symbol;
+    if (_color == "White") {
+        symbol = "\u2658";
+    }
+    else if (_color == "Black") {
+        symbol = "\u265E";
+    }
 
+};
+Knight::~Knight() {};
+//Bishop Class
 bool Bishop::isValidMove(int startX, int startY, int endX, int endY){
     int dx = endX - startX;
     int dy = endY - startY;
@@ -69,8 +97,19 @@ bool Bishop::isValidMove(int startX, int startY, int endX, int endY){
     
     return false;
 }
+Bishop::Bishop(const string _color) :Piece(_color, "") {
+    string symbol;
+    if (_color == "White") {
+        symbol = "\u2657";
+    }
+    else if (_color == "Black") {
+        symbol = "\u265D";
+    }
+};
+Bishop::~Bishop() {};
 
 
+//King Class
 bool King::isValidMove(int startX, int startY, int endX, int endY){
     int dx = endX - startX;
     int dy = endY - startY;
@@ -82,6 +121,16 @@ bool King::isValidMove(int startX, int startY, int endX, int endY){
     
     return false;
 }
+King::King(const string _color) :Piece(_color, "") {
+    string symbol;
+    if (_color == "White") {
+        symbol = "\u2654";
+    }
+    else if (_color == "Black") {
+        symbol = "\u265A";
+    }
+};
+King::~King() {};
 bool Queen::isValidMove(int startX, int startY, int endX, int endY){
     int dx = endX - startX;
     int dy = endY - startY;
@@ -94,6 +143,18 @@ bool Queen::isValidMove(int startX, int startY, int endX, int endY){
     return false;
 }
 
+//Queen Class
+Queen::Queen(const string _color) : Piece(_color, "") {
+    string symbol;
+    if (_color == "White") {
+        symbol = "\u2655";
+    }
+    else if (_color == "Black") {
+        symbol = "\u265B";
+    }
+
+};
+Queen::~Queen() {};
 bool Rook::isValidMove(int startX, int startY, int endX, int endY){
     int dx = endX - startX;
     int dy = endY - startY;
@@ -104,4 +165,16 @@ bool Rook::isValidMove(int startX, int startY, int endX, int endY){
 //rook only moves in straight line
     return false;
 }
+
+//Rook Class
+Rook::Rook(const string _color) :Piece(_color, "") {
+    string symbol;
+    if (_color == "White") {
+        symbol = "\u2656";
+    }
+    else if (_color == "Black") {
+        symbol = "\u265C";
+    }
+};
+Rook::~Rook() {};
 

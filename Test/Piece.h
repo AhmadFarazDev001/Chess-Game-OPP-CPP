@@ -22,86 +22,41 @@ public:
 class Pawn:public Piece{
 public:
     ~Pawn();
-    Pawn(const string _color):Piece(_color , "" ){
-        string symbol;
-        if(_color == "White"){
-            symbol    ="\u2659";
-        }else if(_color  == "Black"){
-            symbol = "\u265F";
-        }
-        
-    };
+    Pawn(const string _color);
     bool isValidMove(int startX, int startY, int endX, int endY) override;
 };
-//knight ke lie
+//For knight
 class Knight:public Piece{
 public:
     ~Knight();
-    Knight(const string _color):Piece(_color , "" ){
-        string symbol;
-        if(_color == "White"){
-            symbol    ="\u2654";
-        }else if(_color  == "Black"){
-            symbol = "\u265E";
-        }
-        
-    };
+    Knight(const string _color);
     bool isValidMove(int startX, int startY, int endX, int endY) override;
 };
 //queen ke lie
 class Queen:public Piece{
 public:
     ~Queen();
-    Queen(const string _color): Piece(_color , "" ){
-        string symbol;
-        if(_color == "White"){
-            symbol    = "\u2658";
-        }else if(_color  == "Black"){
-            symbol = "\u265B";
-        }
-        
-    };
+    Queen(const string _color);
     bool isValidMove(int startX, int startY, int endX, int endY)override;
 };
 //king ke lie
 class King :public Piece{
 public:
     ~King();
-    King(const string _color):Piece(_color , "" ){
-        string symbol;
-        if(_color == "White"){
-            symbol    = "\u2654";
-        }else if(_color  == "Black"){
-            symbol = "\u265A";
-        }
-    };
+    King(const string _color);
     bool isValidMove(int startX, int startY, int endX, int endY) override;
 };
 //bishop
 class Bishop :public Piece {
 public:
     ~Bishop();
-    Bishop(const string _color):Piece(_color , "" ){
-        string symbol;
-        if(_color == "White"){
-            symbol    = "\u2657";
-        }else if(_color  == "Black"){
-            symbol = "\u265D";
-        }
-    };
+    Bishop(const string _color);
     bool isValidMove(int startX, int startY, int endX, int endY)override;
 };
 class Rook :public Piece{
 public:
     ~Rook();
-    Rook(const string _color):Piece(_color , "" ){
-        string symbol;
-        if(_color == "White"){
-            symbol    = "\u2656";
-        }else if(_color  == "Black"){
-            symbol = "\u265C";
-        }
-    };
+    Rook(const string _color);
     bool isValidMove(int startX, int startY, int endX, int endY) override;
 };
 #endif

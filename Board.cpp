@@ -69,7 +69,7 @@ void Board::printRow(int y)
     string bgDark = "\033[48;2;100;50;10m";
     string reset = "\033[0m";
     cout << "  +---+---+---+---+---+---+---+---+\n";
-    cout << y << " |";
+    cout << 9-y << " |";
     for (int i = 0; i < 8; i++)
     {
 
@@ -86,7 +86,7 @@ void Board::printBoard()
     cout << "   a   b   c   d   e   f   g   h\n";
     for (int i = 1; i <= 8; i++)
     {
-        printRow(8-i);
+        printRow(i);
     }
     cout << "  +---+---+---+---+---+---+---+---+\n";
 }
@@ -269,7 +269,7 @@ bool Board::executeMove(int startX, int startY, int endX, int endY, string curre
         delete tempPiece;
         return true;
     }
-
+    grid[endY - 1][endX - 1]->sethasmoved(true);
     return true;
 
 }

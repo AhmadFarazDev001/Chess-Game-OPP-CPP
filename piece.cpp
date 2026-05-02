@@ -3,7 +3,7 @@
 //piece class
 Piece::Piece(const string _color , const string _symbol):color(_color) , symbol(_symbol)
 {
-    hasmoved = true;
+    hasmoved = false;
 };
 string Piece::getcolor(){
     return color;
@@ -75,7 +75,6 @@ bool Knight::isValidMove(int startX, int startY, int endX, int endY){
 }
 
 Knight::Knight(const string _color) :Piece(_color, "") {
-    string symbol;
     if (_color == "White") {
         symbol = "\u2658";
     }
@@ -98,7 +97,6 @@ bool Bishop::isValidMove(int startX, int startY, int endX, int endY){
     return false;
 }
 Bishop::Bishop(const string _color) :Piece(_color, "") {
-    string symbol;
     if (_color == "White") {
         symbol = "\u2657";
     }
@@ -122,7 +120,6 @@ bool King::isValidMove(int startX, int startY, int endX, int endY){
     return false;
 }
 King::King(const string _color) :Piece(_color, "") {
-    string symbol;
     if (_color == "White") {
         symbol = "\u2654";
     }
@@ -145,7 +142,6 @@ bool Queen::isValidMove(int startX, int startY, int endX, int endY){
 
 //Queen Class
 Queen::Queen(const string _color) : Piece(_color, "") {
-    string symbol;
     if (_color == "White") {
         symbol = "\u2655";
     }
@@ -168,7 +164,6 @@ bool Rook::isValidMove(int startX, int startY, int endX, int endY){
 
 //Rook Class
 Rook::Rook(const string _color) :Piece(_color, "") {
-    string symbol;
     if (_color == "White") {
         symbol = "\u2656";
     }

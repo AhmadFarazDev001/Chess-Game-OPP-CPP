@@ -68,8 +68,13 @@ void Board::printRow(int y)
     string bgBrown = "\033[48;2;139;69;19m";
     string bgDark = "\033[48;2;100;50;10m";
     string reset = "\033[0m";
+   static int k = 8;
     cout << "  +---+---+---+---+---+---+---+---+\n";
-    cout << y << " |";
+    cout << k-- << " |";
+    if (k == 0)
+    {
+        k = 8;
+    }
     for (int i = 0; i < 8; i++)
     {
 
@@ -86,7 +91,7 @@ void Board::printBoard()
     cout << "   a   b   c   d   e   f   g   h\n";
     for (int i = 1; i <= 8; i++)
     {
-        printRow(8-i);
+        printRow(i);
     }
     cout << "  +---+---+---+---+---+---+---+---+\n";
 }
