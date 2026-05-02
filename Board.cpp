@@ -266,10 +266,10 @@ bool Board::executeMove(int startX, int startY, int endX, int endY, string curre
     }
     else
     {
+        grid[endY - 1][endX - 1]->sethasmoved(true);
         delete tempPiece;
         return true;
     }
-    grid[endY - 1][endX - 1]->sethasmoved(true);
     return true;
 
 }
