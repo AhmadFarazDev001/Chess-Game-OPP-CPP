@@ -4,11 +4,24 @@
 #include <SFML/System.hpp>
 #include <map>
 #include <string>
+#include <vector>
+#include <fstream>
+#include <sstream>
 #include <iostream>
 #include "Board.h"
 #include "library.h"
+#include "gamerecord.h"
 
-enum class GameState { MENU, RULES, CREDITS, PLAYING, GAMEOVER, NAME_INPUT };
+// Added LEADERBOARD to GameState
+enum class GameState { MENU, RULES, CREDITS, LEADERBOARD, PLAYING, GAMEOVER, NAME_INPUT };
+
+// Struct to hold parsed file data
+struct LeaderboardEntry {
+    std::string white;
+    std::string black;
+    std::string result;
+    std::string date;
+};
 
 class SFMLEngine {
 private:
@@ -26,6 +39,7 @@ private:
     // UI Elements for Menu
     sf::RectangleShape btnStart;
     sf::RectangleShape btnRules;
+    sf::RectangleShape btnLeaderboard; // New Button
     sf::RectangleShape btnCredits;
     sf::RectangleShape btnRawConsole;
     sf::RectangleShape btnExit;
@@ -36,6 +50,7 @@ private:
 
     sf::Text txtStart;
     sf::Text txtRules;
+    sf::Text txtLeaderboard; // New Text
     sf::Text txtCredits;
     sf::Text txtRawConsole;
     sf::Text txtExit;
@@ -53,15 +68,21 @@ private:
     bool isEnteringPlayerBlack;
     std::string errorMessage;
 
+    // Leaderboard Data Container
+    std::vector<LeaderboardEntry> leaderboardData;
+
     void loadAssets();
     void setupUI();
     void processEvents();
     void update();
     void render();
 
+    void loadLeaderboardData(); // New Data Parser
+
     void renderMenu();
     void renderRules();
     void renderCredits();
+    void renderLeaderboard(); // New Render Screen
     void renderBoard();
     void renderGameOver();
     void renderNameInput();

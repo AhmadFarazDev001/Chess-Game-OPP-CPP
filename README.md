@@ -1,4 +1,3 @@
-
 # ♟️ Chess Engine (C++ / OOP)
 
 ![C++](https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B)
@@ -15,6 +14,7 @@ Developed as the final Semester Project for the **Object-Oriented Programming La
 ## ✨ Features
 
 * **Dual Interface:** Play via the modern SFML GUI or the classic ANSI-colored terminal.
+* **Match History & Leaderboard:** Features a persistent leaderboard system using C++ File I/O. Match results, player names, and timestamps are automatically saved and dynamically rendered in a dedicated GUI panel.
 * **Strict Move Validation:** Every piece mathematically follows exact chess rules, including path-clearing and collision detection.
 * **Advanced Chess Rules:** * Check & Checkmate detection
   * Stalemate conditions
@@ -40,7 +40,7 @@ If you are trying to test using the console, you must configure the SFML library
 **To compile and run via Windows Terminal (using MinGW/g++):**
 ```bash
 # 1. Compile the source code
-g++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp -o ChessGame.exe -lsfml-graphics -lsfml-window -lsfml-system
+g++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp gamerecord.cpp -o ChessGame.exe -lsfml-graphics -lsfml-window -lsfml-system
 
 # 2. Run the game
 .\ChessGame.exe
@@ -55,7 +55,7 @@ Because our engine is built on standard C++ and SFML, it is 100% cross-platform.
 brew install sfml
 
 # 2. Compile the source code
-clang++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp -o ChessGame -lsfml-graphics -lsfml-window -lsfml-system
+clang++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp gamerecord.cpp -o ChessGame -lsfml-graphics -lsfml-window -lsfml-system
 
 # 3. Run the game
 ./ChessGame
@@ -67,7 +67,7 @@ clang++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp
 sudo apt-get install libsfml-dev
 
 # 2. Compile the source code
-g++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp -o ChessGame -lsfml-graphics -lsfml-window -lsfml-system
+g++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp gamerecord.cpp -o ChessGame -lsfml-graphics -lsfml-window -lsfml-system
 
 # 3. Run the game
 ./ChessGame
@@ -83,6 +83,7 @@ This project strictly adheres to core OOP principles:
 * **Inheritance:** All specific chess pieces (`Pawn`, `Knight`, `Rook`, etc.) inherit from a single abstract base class called `Piece`.
 * **Polymorphism:** The `Piece` base class defines a pure virtual function `virtual bool isValidMove(...) = 0;`. Each derived piece overrides this with its own unique mathematical movement logic, allowing the `Board` to evaluate moves dynamically.
 * **Composition:** The `Board` class "has-a" relationship with the pieces, containing a 2D array of `Piece*` pointers to manage the physical game state.
+* **File I/O & Structs:** The `RecordGame` structure encapsulates file streaming logic (`<fstream>`) to read, write, and parse piped delimiter strings into dynamic UI elements.
 
 ---
 

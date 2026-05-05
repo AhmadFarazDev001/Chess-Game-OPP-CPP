@@ -1,5 +1,6 @@
 #include "gameexecution.h"
 
+
 void pauseWithError(string message) {
 	cout << "\033[1;31m" << message << "\033[0m" << endl; 
 	cout << "Press Enter to continue...";
@@ -12,6 +13,18 @@ bool executeGame()
 	Board board;
 	board.setupStartingPosition();
 	string currentTurn = "White";
+	string BlackName, WhiteName;
+	cout << "+===============================+\n";
+	cout << "|          Chess Board          |\n";
+	cout << "+===============================+\n";
+	cout << "\n\n";
+	cout << "Enter Player 1 Name: ";
+	getline(cin, WhiteName);
+	cout << "Enter Player 2 Name: ";
+	getline(cin, BlackName);
+	RecordGame rg;
+	rg.BlackName = BlackName;
+	rg.WhiteName = WhiteName;
 	while (true)
 	{
 		   #ifdef _WIN32
@@ -26,7 +39,7 @@ bool executeGame()
 			cout << "+===============================+\n";
 			cout << "\n\n";
 		cout << "+===============================+\n";
-		cout << "|          Turn: " << currentTurn << "          |\n";
+		cout << " Turn: " << currentTurn << " -- " << ((currentTurn == "White") ? WhiteName : BlackName) << endl;
 		cout << "+===============================+\n";
 		cout << "\n";
 		board.printBoard();
@@ -67,12 +80,18 @@ bool executeGame()
 			#endif
 			board.printBoard();
 			cout << "\n\033[1;32mCHECKMATE! Winner: " << currentTurn << "\033[0m" << endl;
+			string message= currentTurn;
+			message += " Win due to CheckMate";
+			rg.result = message;
+			rg.getTime();
 			break;
 		}
 
 		if (board.isDraw(opponent))
 		{
 			cout << "Game ended in a Draw!" << endl;
+			rg.result = "Draw between Both Players";
+			rg.getTime();
 			break;
 		}
 		currentTurn = opponent;
@@ -80,5 +99,6 @@ bool executeGame()
 		cin.ignore(1000, '\n');
 	}
 
+	rg.record();
 	return true;
 }

@@ -26,4 +26,3 @@ x86/
 *.suo
 *.db
 *.log
-/temp.cpp
