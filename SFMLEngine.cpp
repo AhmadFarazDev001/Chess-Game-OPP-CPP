@@ -1,7 +1,7 @@
 #include "SFMLEngine.h"
 
 SFMLEngine::SFMLEngine()
-    : window(sf::VideoMode(1200, 800), "Chess Engine", sf::Style::Titlebar | sf::Style::Close),
+    : window(sf::VideoMode(1200, 800), "ObjectMate Engine", sf::Style::Titlebar | sf::Style::Close),
     currentState(GameState::MENU),
     currentTurn("White"),
     selectedX(-1),
@@ -30,6 +30,16 @@ void SFMLEngine::loadAssets() {
         std::cout << "Error: Could not load assets/font.ttf" << std::endl;
     }
 
+    if (!texMainBg.loadFromFile("assets/main-bg.png")) {
+        std::cout << "Error: Could not load assets/main-bg.png" << std::endl;
+    }
+    sprMainBg.setTexture(texMainBg);
+
+    if (!texMenuBg.loadFromFile("assets/menu-bg.png")) {
+        std::cout << "Error: Could not load assets/menu-bg.png" << std::endl;
+    }
+    sprMenuBg.setTexture(texMenuBg);
+
     std::string pieces[] = {
         "black-bishop", "black-king", "black-knight", "black-pawn", "black-queen", "black-rook",
         "white-bishop", "white-king", "white-knight", "white-pawn", "white-queen", "white-rook"
@@ -47,9 +57,11 @@ void SFMLEngine::setupUI() {
     auto setupButton = [&](sf::RectangleShape& btn, sf::Text& txt, float yOffset, const std::string& label) {
         btn.setSize(sf::Vector2f(400, 60));
         btn.setPosition(400, yOffset);
-        btn.setFillColor(sf::Color(45, 50, 60));
+
+        // Use alpha channel for slight transparency to blend with background
+        btn.setFillColor(sf::Color(45, 50, 60, 230));
         btn.setOutlineThickness(1);
-        btn.setOutlineColor(sf::Color(80, 90, 110));
+        btn.setOutlineColor(sf::Color(80, 90, 110, 200));
 
         txt.setFont(font);
         txt.setString(label);
@@ -61,22 +73,12 @@ void SFMLEngine::setupUI() {
         txt.setPosition(btn.getPosition().x + btn.getSize().x / 2.0f, btn.getPosition().y + btn.getSize().y / 2.0f);
         };
 
-    txtTitle.setFont(font);
-    txtTitle.setString("CHESS");
-    txtTitle.setCharacterSize(75);
-    txtTitle.setStyle(sf::Text::Bold);
-    txtTitle.setFillColor(sf::Color(255, 255, 255));
-    sf::FloatRect textRect = txtTitle.getLocalBounds();
-    txtTitle.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-    txtTitle.setPosition(600, 130);
-
     txtEscapeHint.setFont(font);
     txtEscapeHint.setString("Press ESC to return / exit");
     txtEscapeHint.setCharacterSize(16);
-    txtEscapeHint.setFillColor(sf::Color(120, 130, 150));
+    txtEscapeHint.setFillColor(sf::Color(200, 200, 200));
     txtEscapeHint.setPosition(20, 760);
 
-    // Adjusted Y-offsets to fit the new Leaderboard button gracefully
     setupButton(btnStart, txtStart, 260, "Start New Game");
     setupButton(btnRules, txtRules, 340, "Rules");
     setupButton(btnLeaderboard, txtLeaderboard, 420, "Leaderboard");
@@ -93,29 +95,26 @@ void SFMLEngine::setupUI() {
     txtQuitGame.setString("Quit Game");
     txtQuitGame.setCharacterSize(20);
     txtQuitGame.setFillColor(sf::Color::White);
-    textRect = txtQuitGame.getLocalBounds();
+    sf::FloatRect textRect = txtQuitGame.getLocalBounds();
     txtQuitGame.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
     txtQuitGame.setPosition(btnQuitGame.getPosition().x + btnQuitGame.getSize().x / 2.0f, btnQuitGame.getPosition().y + btnQuitGame.getSize().y / 2.0f);
 }
 
-// Loads and parses the gamehistory.txt file
 void SFMLEngine::loadLeaderboardData() {
     leaderboardData.clear();
     std::ifstream file("gamehistory.txt");
-    if (!file.is_open()) return; // If file doesn't exist yet, just render empty board
+    if (!file.is_open()) return;
 
     std::string line;
     while (std::getline(file, line)) {
         std::stringstream ss(line);
         LeaderboardEntry entry;
 
-        // Split using the pipe delimiter you established
         std::getline(ss, entry.white, '|');
         std::getline(ss, entry.black, '|');
         std::getline(ss, entry.result, '|');
         std::getline(ss, entry.date, '|');
 
-        // Insert at the beginning so the newest games appear at the top
         leaderboardData.insert(leaderboardData.begin(), entry);
     }
     file.close();
@@ -201,7 +200,7 @@ void SFMLEngine::handleMouseClick(int x, int y) {
             currentState = GameState::RULES;
         }
         else if (btnLeaderboard.getGlobalBounds().contains(mousePos)) {
-            loadLeaderboardData(); // Read the file before opening screen
+            loadLeaderboardData();
             currentState = GameState::LEADERBOARD;
         }
         else if (btnCredits.getGlobalBounds().contains(mousePos)) {
@@ -216,7 +215,6 @@ void SFMLEngine::handleMouseClick(int x, int y) {
         }
     }
     else if (currentState == GameState::RULES || currentState == GameState::CREDITS || currentState == GameState::GAMEOVER || currentState == GameState::LEADERBOARD) {
-        // Exiting sub-menus handles by ESC, but clicking can also exit
         currentState = GameState::MENU;
     }
     else if (currentState == GameState::PLAYING) {
@@ -254,7 +252,7 @@ void SFMLEngine::handleMouseClick(int x, int y) {
                     if (board.isCheckmate(opponent)) {
                         winnerName = currentTurn;
 
-                        // We must save the GUI game history here as well!
+                        // Save match outcome to text file
                         RecordGame rg;
                         rg.WhiteName = playerWhiteName;
                         rg.BlackName = playerBlackName;
@@ -297,15 +295,15 @@ void SFMLEngine::update() {
     if (currentState == GameState::MENU) {
         auto updateHover = [&](sf::RectangleShape& btn) {
             if (btn.getGlobalBounds().contains(mousePosF)) {
-                btn.setFillColor(sf::Color(65, 75, 90));
+                btn.setFillColor(sf::Color(65, 75, 90, 230));
             }
             else {
-                btn.setFillColor(sf::Color(45, 50, 60));
+                btn.setFillColor(sf::Color(45, 50, 60, 230));
             }
             };
         updateHover(btnStart);
         updateHover(btnRules);
-        updateHover(btnLeaderboard); // Hover logic for new button
+        updateHover(btnLeaderboard);
         updateHover(btnCredits);
         updateHover(btnRawConsole);
         updateHover(btnExit);
@@ -321,39 +319,45 @@ void SFMLEngine::update() {
 }
 
 void SFMLEngine::render() {
-    sf::VertexArray bg(sf::Quads, 4);
-    bg[0].position = sf::Vector2f(0, 0);       bg[0].color = sf::Color(20, 25, 35);
-    bg[1].position = sf::Vector2f(1200, 0);    bg[1].color = sf::Color(15, 20, 30);
-    bg[2].position = sf::Vector2f(1200, 800);  bg[2].color = sf::Color(10, 12, 18);
-    bg[3].position = sf::Vector2f(0, 800);     bg[3].color = sf::Color(15, 18, 25);
-
     window.clear();
-    window.draw(bg);
 
-    if (currentState == GameState::MENU) renderMenu();
-    else if (currentState == GameState::NAME_INPUT) renderNameInput();
-    else if (currentState == GameState::RULES) renderRules();
-    else if (currentState == GameState::CREDITS) renderCredits();
-    else if (currentState == GameState::LEADERBOARD) renderLeaderboard();
-    else if (currentState == GameState::PLAYING) renderBoard();
-    else if (currentState == GameState::GAMEOVER) {
-        renderBoard();
-        renderGameOver();
+    if (currentState == GameState::MENU) {
+        window.draw(sprMainBg);
+        renderMenu();
+    }
+    else if (currentState == GameState::NAME_INPUT || currentState == GameState::RULES ||
+        currentState == GameState::CREDITS || currentState == GameState::LEADERBOARD) {
+        window.draw(sprMenuBg);
+        if (currentState == GameState::NAME_INPUT) renderNameInput();
+        else if (currentState == GameState::RULES) renderRules();
+        else if (currentState == GameState::CREDITS) renderCredits();
+        else if (currentState == GameState::LEADERBOARD) renderLeaderboard();
+    }
+    else if (currentState == GameState::PLAYING || currentState == GameState::GAMEOVER) {
+        // Active gameplay background
+        sf::VertexArray bg(sf::Quads, 4);
+        bg[0].position = sf::Vector2f(0, 0);       bg[0].color = sf::Color(20, 25, 35);
+        bg[1].position = sf::Vector2f(1200, 0);    bg[1].color = sf::Color(15, 20, 30);
+        bg[2].position = sf::Vector2f(1200, 800);  bg[2].color = sf::Color(10, 12, 18);
+        bg[3].position = sf::Vector2f(0, 800);     bg[3].color = sf::Color(15, 18, 25);
+        window.draw(bg);
+
+        if (currentState == GameState::PLAYING) {
+            renderBoard();
+        }
+        else if (currentState == GameState::GAMEOVER) {
+            renderBoard();
+            renderGameOver();
+        }
     }
 
     window.display();
 }
 
 void SFMLEngine::renderMenu() {
-    sf::Text titleShadow = txtTitle;
-    titleShadow.setFillColor(sf::Color(0, 0, 0, 150));
-    titleShadow.move(4.0f, 4.0f);
-    window.draw(titleShadow);
-    window.draw(txtTitle);
-
     auto drawBtn = [&](sf::RectangleShape& btn, sf::Text& txt) {
         sf::RectangleShape shadow = btn;
-        shadow.setFillColor(sf::Color(0, 0, 0, 100));
+        shadow.setFillColor(sf::Color(0, 0, 0, 150));
         shadow.move(4.0f, 4.0f);
         window.draw(shadow);
         window.draw(btn);
@@ -362,11 +366,15 @@ void SFMLEngine::renderMenu() {
 
     drawBtn(btnStart, txtStart);
     drawBtn(btnRules, txtRules);
-    drawBtn(btnLeaderboard, txtLeaderboard); // Draw new button
+    drawBtn(btnLeaderboard, txtLeaderboard);
     drawBtn(btnCredits, txtCredits);
     drawBtn(btnRawConsole, txtRawConsole);
     drawBtn(btnExit, txtExit);
 
+    sf::Text escShadow = txtEscapeHint;
+    escShadow.setFillColor(sf::Color::Black);
+    escShadow.move(2.0f, 2.0f);
+    window.draw(escShadow);
     window.draw(txtEscapeHint);
 }
 
@@ -376,30 +384,33 @@ void SFMLEngine::renderLeaderboard() {
     title.setString("MATCH HISTORY");
     title.setCharacterSize(45);
     title.setStyle(sf::Text::Bold);
-    title.setFillColor(sf::Color(255, 215, 0)); // Gold title
+    title.setFillColor(sf::Color(255, 215, 0));
     sf::FloatRect bounds = title.getLocalBounds();
     title.setOrigin(bounds.width / 2.0f, bounds.height / 2.0f);
     title.setPosition(600, 80);
+
+    sf::Text tShadow = title;
+    tShadow.setFillColor(sf::Color::Black);
+    tShadow.move(3.0f, 3.0f);
+    window.draw(tShadow);
     window.draw(title);
 
-    // Table Headers
+    // Data table headers
     sf::Text header;
     header.setFont(font);
     header.setCharacterSize(22);
-    header.setFillColor(sf::Color(150, 160, 180));
+    header.setFillColor(sf::Color(180, 190, 210));
 
     header.setString("WHITE");  header.setPosition(100, 150); window.draw(header);
     header.setString("BLACK");  header.setPosition(300, 150); window.draw(header);
     header.setString("RESULT"); header.setPosition(500, 150); window.draw(header);
     header.setString("DATE");   header.setPosition(880, 150); window.draw(header);
 
-    // Separator Line
     sf::RectangleShape line(sf::Vector2f(1000, 2));
     line.setPosition(100, 190);
-    line.setFillColor(sf::Color(100, 100, 100));
+    line.setFillColor(sf::Color(150, 150, 150, 200));
     window.draw(line);
 
-    // Render Data
     int y = 210;
     sf::Text entryTxt;
     entryTxt.setFont(font);
@@ -412,18 +423,15 @@ void SFMLEngine::renderLeaderboard() {
         window.draw(entryTxt);
     }
     else {
-        // Display up to 12 recent games to fit the screen
         for (size_t i = 0; i < leaderboardData.size() && i < 12; ++i) {
             entryTxt.setFillColor(sf::Color::White);
             entryTxt.setString(leaderboardData[i].white); entryTxt.setPosition(100, y); window.draw(entryTxt);
             entryTxt.setString(leaderboardData[i].black); entryTxt.setPosition(300, y); window.draw(entryTxt);
 
-            // Highlight the result in bright blue
             entryTxt.setFillColor(sf::Color(100, 200, 255));
             entryTxt.setString(leaderboardData[i].result); entryTxt.setPosition(500, y); window.draw(entryTxt);
 
-            // Date in grey
-            entryTxt.setFillColor(sf::Color(200, 200, 200));
+            entryTxt.setFillColor(sf::Color(220, 220, 220));
             entryTxt.setString(leaderboardData[i].date);   entryTxt.setPosition(880, y); window.draw(entryTxt);
 
             y += 40;
@@ -434,8 +442,13 @@ void SFMLEngine::renderLeaderboard() {
     escHint.setFont(font);
     escHint.setString("Press ESC to return to Menu");
     escHint.setCharacterSize(20);
-    escHint.setFillColor(sf::Color(150, 150, 150));
+    escHint.setFillColor(sf::Color(200, 200, 200));
     escHint.setPosition(470, 750);
+
+    sf::Text hintShadow = escHint;
+    hintShadow.setFillColor(sf::Color::Black);
+    hintShadow.move(2.0f, 2.0f);
+    window.draw(hintShadow);
     window.draw(escHint);
 }
 
@@ -464,17 +477,30 @@ void SFMLEngine::renderNameInput() {
     instrText.setFont(font);
     instrText.setString("Press ENTER to confirm\nPress ESC to return to Menu");
     instrText.setCharacterSize(18);
-    instrText.setFillColor(sf::Color(150, 160, 180));
+    instrText.setFillColor(sf::Color(200, 210, 230));
     bounds = instrText.getLocalBounds();
     instrText.setOrigin(bounds.width / 2.0f, bounds.height / 2.0f);
     instrText.setPosition(600, 550);
 
-    window.draw(promptText);
-    window.draw(inputDisplay);
-    window.draw(instrText);
+    auto drawWithShadow = [&](sf::Text& txt) {
+        sf::Text shadow = txt;
+        shadow.setFillColor(sf::Color::Black);
+        shadow.move(3.0f, 3.0f);
+        window.draw(shadow);
+        window.draw(txt);
+        };
+
+    drawWithShadow(promptText);
+    drawWithShadow(inputDisplay);
+    drawWithShadow(instrText);
 }
 
 void SFMLEngine::renderRules() {
+    sf::RectangleShape panel(sf::Vector2f(900, 500));
+    panel.setFillColor(sf::Color(0, 0, 0, 180));
+    panel.setPosition(150, 150);
+    window.draw(panel);
+
     sf::Text rulesText;
     rulesText.setFont(font);
     rulesText.setString("CHESS RULES\n\n"
@@ -491,17 +517,22 @@ void SFMLEngine::renderRules() {
         "Press ESC to return to Menu.");
     rulesText.setCharacterSize(22);
     rulesText.setFillColor(sf::Color(230, 230, 240));
-    rulesText.setPosition(100, 100);
+    rulesText.setPosition(200, 180);
     window.draw(rulesText);
 }
 
 void SFMLEngine::renderCredits() {
+    sf::RectangleShape panel(sf::Vector2f(600, 400));
+    panel.setFillColor(sf::Color(0, 0, 0, 180));
+    panel.setPosition(300, 200);
+    window.draw(panel);
+
     sf::Text creditsText;
     creditsText.setFont(font);
     creditsText.setString("CREDITS\n\n\n\nAhmad Faraz (25F-0510)\n\nUbaid Ur Rehman (25F-0570)\n\n\n\n\nPress ESC to return to Menu.");
     creditsText.setCharacterSize(28);
     creditsText.setFillColor(sf::Color(100, 200, 255));
-    creditsText.setPosition(150, 200);
+    creditsText.setPosition(350, 230);
     window.draw(creditsText);
 }
 

@@ -17,8 +17,8 @@ Board::~Board()
     {
         for (int j = 0; j < 8; j++)
         {
-            if(grid[i][j] != nullptr)
-            delete grid[i][j];
+            if (grid[i][j] != nullptr)
+                delete grid[i][j];
         }
     }
 }
@@ -69,7 +69,7 @@ void Board::printRow(int y)
     string bgDark = "\033[48;2;100;50;10m";
     string reset = "\033[0m";
     cout << "  +---+---+---+---+---+---+---+---+\n";
-    cout << 9-y << " |";
+    cout << 9 - y << " |";
     for (int i = 0; i < 8; i++)
     {
 
@@ -126,7 +126,7 @@ bool Board::isPathClear(int startX, int startY, int endX, int endY)
 
     //If startX > or < endX and startY > or < endY it means Piece moves diagnally
 
-    int currX=startX + moveX, currY=startY + moveY;
+    int currX = startX + moveX, currY = startY + moveY;
 
     while (currX != endX || currY != endY)
     {
@@ -179,14 +179,14 @@ bool Board::isKingInCheck(string kingColor)
                                 continue;
                             }
                         }
-                            if ((grid[i][j]->getsymbol() == "\u265E") || (grid[i][j]->getsymbol() == "\u2658")) //Check Knight
-                            {
-                                return true;
-                            }
-                            else if (isPathClear(j, i, kingX, kingY) == true)
-                            {
-                                return true;
-                            }
+                        if ((grid[i][j]->getsymbol() == "\u265E") || (grid[i][j]->getsymbol() == "\u2658")) //Check Knight
+                        {
+                            return true;
+                        }
+                        else if (isPathClear(j, i, kingX, kingY) == true)
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -236,7 +236,7 @@ bool Board::executeMove(int startX, int startY, int endX, int endY, string curre
     //Step 4: Check if the path is clear
     if ((grid[startY - 1][startX - 1]->getsymbol() != "\u265E") && (grid[startY - 1][startX - 1]->getsymbol() != "\u2658"))
     {
-        if (isPathClear(startX-1, startY-1, endX-1, endY-1) == false)
+        if (isPathClear(startX - 1, startY - 1, endX - 1, endY - 1) == false)
         {
             cout << "Error: The path to the destination is blocked by another piece." << endl;
             return false;
@@ -267,6 +267,19 @@ bool Board::executeMove(int startX, int startY, int endX, int endY, string curre
     else
     {
         grid[endY - 1][endX - 1]->sethasmoved(true);
+
+        //Step 7: Check for Pawn Promotion
+        if (grid[endY - 1][endX - 1]->getsymbol() == "\u2659" || grid[endY - 1][endX - 1]->getsymbol() == "\u265F")
+        {
+            // White pawns promote at Y=1, Black pawns promote at Y=8
+            if ((currentPlayerColor == "White" && endY == 1) || (currentPlayerColor == "Black" && endY == 8))
+            {
+                Piece* oldPawn = grid[endY - 1][endX - 1];
+                grid[endY - 1][endX - 1] = new Queen(currentPlayerColor); // Promote to Queen
+                delete oldPawn; // Prevent memory leak of the old pawn
+            }
+        }
+
         delete tempPiece;
         return true;
     }
@@ -402,47 +415,47 @@ bool Board::islesspeice() {
     return false;
 }
 
-bool Board::isDraw(string currentplayercolor){
-    if(isStalemate(currentplayercolor)){
+bool Board::isDraw(string currentplayercolor) {
+    if (isStalemate(currentplayercolor)) {
         return true;
     }
-    if(islesspeice()){
+    if (islesspeice()) {
         return true;
     }
-    if(isThreefoldRepetition(currentplayercolor)){
+    if (isThreefoldRepetition(currentplayercolor)) {
         return true;
     }
     return false;
 }
-string Board::positiongeneratekey(string currentplayercolor){
+string Board::positiongeneratekey(string currentplayercolor) {
     string key = "";
-    for(int i = 0; i < 8;++i){
-        for(int j = 0; j < 8;++j)
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j)
         {
-            if(grid[i][j] == nullptr){
+            if (grid[i][j] == nullptr) {
                 key += ".";
             }
-            if(grid[i][j] != nullptr){
+            if (grid[i][j] != nullptr) {
                 key += grid[i][j]->getcolor();
-                key+= grid[i][j]->getsymbol();
+                key += grid[i][j]->getsymbol();
             }
             key += ";";
         }
-     
+
     }
     key += "turn";
     key += currentplayercolor;
     return key;
 }
-void Board::recordPosition(string currentPlayerColor){
+void Board::recordPosition(string currentPlayerColor) {
     string key = positiongeneratekey(currentPlayerColor);
     positionhistory[key]++;
 }
 
-bool Board::isThreefoldRepetition(string currentplayercolor){
+bool Board::isThreefoldRepetition(string currentplayercolor) {
     string key = positiongeneratekey(currentplayercolor);
 
-    if(positionhistory[key] >= 3){
+    if (positionhistory[key] >= 3) {
         return true;
     }
     return false;

@@ -1,11 +1,11 @@
-# ♟️ Chess Engine (C++ / OOP)
+# ♟️ ObjectMate: A C++ OOP Chess Engine
 
 ![C++](https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B)
 ![SFML](https://img.shields.io/badge/SFML-2.6-green.svg)
 ![License](https://img.shields.io/badge/Status-Completed-success.svg)
 ![University](https://img.shields.io/badge/FAST_NUCES-Semester_Project-darkred.svg)
 
-A feature-rich, object-oriented Chess Engine built entirely from scratch in C++. This project features a dual-interface system, allowing players to experience the game through a sleek, modern **Graphical Interface (SFML)** or a beautifully colored **Raw Console / Terminal Interface**.
+**ObjectMate** is a feature-rich, object-oriented Chess Engine built entirely from scratch in C++. This project features a dual-interface system, allowing players to experience the game through a sleek, modern **Graphical Interface (SFML)** or a beautifully colored **Raw Console / Terminal Interface**.
 
 Developed as the final Semester Project for the **Object-Oriented Programming Lab (Spring 2026)** at FAST NUCES Faisalabad-Chiniot Campus.
 
@@ -40,10 +40,10 @@ If you are trying to test using the console, you must configure the SFML library
 **To compile and run via Windows Terminal (using MinGW/g++):**
 ```bash
 # 1. Compile the source code
-g++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp gamerecord.cpp -o ChessGame.exe -lsfml-graphics -lsfml-window -lsfml-system
+g++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp gamerecord.cpp -o ObjectMate.exe -lsfml-graphics -lsfml-window -lsfml-system
 
 # 2. Run the game
-.\ChessGame.exe
+.\ObjectMate.exe
 ```
 
 ### 3. Building from Source (Mac / Linux)
@@ -55,10 +55,10 @@ Because our engine is built on standard C++ and SFML, it is 100% cross-platform.
 brew install sfml
 
 # 2. Compile the source code
-clang++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp gamerecord.cpp -o ChessGame -lsfml-graphics -lsfml-window -lsfml-system
+clang++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp gamerecord.cpp -o ObjectMate -lsfml-graphics -lsfml-window -lsfml-system
 
 # 3. Run the game
-./ChessGame
+./ObjectMate
 ```
 
 **For Linux (Ubuntu/Debian):**
@@ -67,10 +67,10 @@ clang++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp
 sudo apt-get install libsfml-dev
 
 # 2. Compile the source code
-g++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp gamerecord.cpp -o ChessGame -lsfml-graphics -lsfml-window -lsfml-system
+g++ -std=c++17 main.cpp Board.cpp Piece.cpp gameexecution.cpp SFMLEngine.cpp gamerecord.cpp -o ObjectMate -lsfml-graphics -lsfml-window -lsfml-system
 
 # 3. Run the game
-./ChessGame
+./ObjectMate
 ```
 
 ---

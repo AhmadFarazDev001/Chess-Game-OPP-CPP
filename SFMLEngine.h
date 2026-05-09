@@ -12,10 +12,10 @@
 #include "library.h"
 #include "gamerecord.h"
 
-// Added LEADERBOARD to GameState
+// Game states for screen navigation
 enum class GameState { MENU, RULES, CREDITS, LEADERBOARD, PLAYING, GAMEOVER, NAME_INPUT };
 
-// Struct to hold parsed file data
+// Structure for match history entries
 struct LeaderboardEntry {
     std::string white;
     std::string black;
@@ -33,60 +33,70 @@ private:
     sf::Font font;
     std::map<std::string, sf::Texture> pieceTextures;
 
+    // Background textures
+    sf::Texture texMainBg;
+    sf::Texture texMenuBg;
+    sf::Sprite sprMainBg;
+    sf::Sprite sprMenuBg;
+
     int selectedX;
     int selectedY;
 
-    // UI Elements for Menu
+    // Menu interactables
     sf::RectangleShape btnStart;
     sf::RectangleShape btnRules;
-    sf::RectangleShape btnLeaderboard; // New Button
+    sf::RectangleShape btnLeaderboard;
     sf::RectangleShape btnCredits;
     sf::RectangleShape btnRawConsole;
     sf::RectangleShape btnExit;
 
-    // UI Element for Gameplay
+    // In-game interactables
     sf::RectangleShape btnQuitGame;
     sf::Text txtQuitGame;
 
+    // Text labels
     sf::Text txtStart;
     sf::Text txtRules;
-    sf::Text txtLeaderboard; // New Text
+    sf::Text txtLeaderboard;
     sf::Text txtCredits;
     sf::Text txtRawConsole;
     sf::Text txtExit;
-    sf::Text txtTitle;
     sf::Text txtEscapeHint;
 
     std::string winnerName;
     bool isDrawGame;
     bool playInConsole;
 
-    // Player Data & Error Handling
+    // Input handling buffers
     std::string playerWhiteName;
     std::string playerBlackName;
     std::string inputText;
     bool isEnteringPlayerBlack;
     std::string errorMessage;
 
-    // Leaderboard Data Container
+    // Match history container
     std::vector<LeaderboardEntry> leaderboardData;
 
+    // Core lifecycle functions
     void loadAssets();
     void setupUI();
     void processEvents();
     void update();
     void render();
 
-    void loadLeaderboardData(); // New Data Parser
+    // Data parsing
+    void loadLeaderboardData();
 
+    // Screen renderers
     void renderMenu();
     void renderRules();
     void renderCredits();
-    void renderLeaderboard(); // New Render Screen
+    void renderLeaderboard();
     void renderBoard();
     void renderGameOver();
     void renderNameInput();
 
+    // Input logic
     void handleMouseClick(int x, int y);
     void handleTextInput(sf::Uint32 unicode);
 
