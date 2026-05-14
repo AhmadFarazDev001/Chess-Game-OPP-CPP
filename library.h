@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <iomanip>
+#include <map>
 #include <cstring>
 #include <string>
 #include <cstdlib>
